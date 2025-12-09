@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Items</h1>
+  <div id="status"></div>
+  <ul id="items"></ul>
+  <script>
+    fetch('http://localhost:3001/status').then(r=>r.text()).then(t=>document.getElementById('status').innerText=t);
+    fetch('http://localhost:3001/items').then(r=>r.json()).then(items=>{
+      const ul=document.getElementById('items');
+      items.forEach(item=> {const li=document.createElement('li'); li.textContent=item.text; ul.appendChild(li);});
+    });
+  </script>
+</body>
+</html>
