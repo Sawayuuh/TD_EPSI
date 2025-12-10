@@ -1,6 +1,10 @@
 const express = require('express');
+const cors = require('cors');
 const { Pool } = require('pg');
 const app = express();
+
+app.use(cors());
+
 const pool = new Pool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -10,9 +14,16 @@ const pool = new Pool({
 });
 
 app.get('/status', (req, res) => res.send('OK'));
+
 app.get('/items', async (req, res) => {
-  const result = await pool.query('SELECT * FROM items');
-  res.json(result.rows);
+  try {
+    const result = await pool.query('SELECT * FROM items');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('DB Error:', err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
-app.listen(process.env.PORT);
+const port = process.env.PORT;
+app.listen(port, () => console.log(`API ready on port ${port}`));
