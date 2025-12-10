@@ -1,5 +1,7 @@
-FROM nginx:alpine AS runtime
-RUN addgroup -g 1001 nginx && adduser -S nginx -u 1001 -G nginx
-COPY --chown=nginx:nginx index.html /usr/share/nginx/html/
-USER nginx
+FROM alpine:3 AS builder
+WORKDIR /build
+COPY index.html ./
+
+FROM nginx:alpine
+COPY --from=builder /build/index.html /usr/share/nginx/html/index.html
 EXPOSE 80
